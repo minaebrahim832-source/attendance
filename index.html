@@ -543,10 +543,17 @@ function buildRecordsMap(){
 }
 function getConsecutiveAbsences(code,recMap){
   let recs=(recMap||{})[code]||[];
+  // السجلات مرتبة من الأحدث للأقدم — نعد الغيابات المتتالية من آخر سجل للخلف
+  // ونوقف فوراً لما نلاقي أول "حاضر"
   let n=0,lastPresent='';
   for(let i=0;i<recs.length;i++){
-    if(recs[i].status==='غائب')n++;
-    else{lastPresent=recs[i].dateStr||recs[i].date;break;}
+    if(recs[i].status==='غائب'){
+      n++;
+    } else {
+      // أول حضور — نسجّل تاريخه ونوقف
+      lastPresent=recs[i].dateStr||recs[i].date;
+      break;
+    }
   }
   return{count:n,lastPresent};
 }
